@@ -1,0 +1,240 @@
+.TH "uartstdio_api" 3 "Thu Oct 27 2016" "Version 0.1" "TM4C1294_SensorHub" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+uartstdio_api \- Uartstdio_api
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBUARTStdioConfig\fP (uint32_t ui32PortNum, uint32_t ui32Baud, uint32_t ui32SrcClock)"
+.br
+.ti -1c
+.RI "int \fBUARTwrite\fP (const char *pcBuf, uint32_t ui32Len)"
+.br
+.ti -1c
+.RI "int \fBUARTgets\fP (char *pcBuf, uint32_t ui32Len)"
+.br
+.ti -1c
+.RI "unsigned char \fBUARTgetc\fP (void)"
+.br
+.ti -1c
+.RI "void \fBUARTvprintf\fP (const char *pcString, va_list vaArgP)"
+.br
+.ti -1c
+.RI "void \fBUARTprintf\fP (const char *pcString,\&.\&.\&.)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "unsigned char UARTgetc (void)"
+Read a single character from the UART, blocking if necessary\&.
+.PP
+This function will receive a single character from the UART and store it at the supplied address\&.
+.PP
+In both buffered and unbuffered modes, this function will block until a character is received\&. If non-blocking operation is required in buffered mode, a call to UARTRxAvail() may be made to determine whether any characters are currently available for reading\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the character read\&. 
+.RE
+.PP
+
+.SS "int UARTgets (char * pcBuf, uint32_t ui32Len)"
+A simple UART based get string function, with some line processing\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpcBuf\fP points to a buffer for the incoming string from the UART\&. 
+.br
+\fIui32Len\fP is the length of the buffer for storage of the string, including the trailing 0\&.
+.RE
+.PP
+This function will receive a string from the UART input and store the characters in the buffer pointed to by \fIpcBuf\fP\&. The characters will continue to be stored until a termination character is received\&. The termination characters are CR, LF, or ESC\&. A CRLF pair is treated as a single termination character\&. The termination characters are not stored in the string\&. The string will be terminated with a 0 and the function will return\&.
+.PP
+In both buffered and unbuffered modes, this function will block until a termination character is received\&. If non-blocking operation is required in buffered mode, a call to UARTPeek() may be made to determine whether a termination character already exists in the receive buffer prior to calling \fBUARTgets()\fP\&.
+.PP
+Since the string will be null terminated, the user must ensure that the buffer is sized to allow for the additional null character\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the count of characters that were stored, not including the trailing 0\&. 
+.RE
+.PP
+
+.SS "void UARTprintf (const char * pcString,  \&.\&.\&.)"
+A simple UART based printf function supporting %c, %d, %p, %s, %u, %x, and %X\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpcString\fP is the format string\&. 
+.br
+\fI\&.\&.\&.\fP are the optional arguments, which depend on the contents of the format string\&.
+.RE
+.PP
+This function is very similar to the C library \fCfprintf()\fP function\&. All of its output will be sent to the UART\&. Only the following formatting characters are supported:
+.PP
+.IP "\(bu" 2
+%c to print a character
+.IP "\(bu" 2
+%d or %i to print a decimal value
+.IP "\(bu" 2
+%s to print a string
+.IP "\(bu" 2
+%u to print an unsigned decimal value
+.IP "\(bu" 2
+%x to print a hexadecimal value using lower case letters
+.IP "\(bu" 2
+%X to print a hexadecimal value using lower case letters (not upper case letters as would typically be used)
+.IP "\(bu" 2
+%p to print a pointer as a hexadecimal value
+.IP "\(bu" 2
+%% to print out a % character
+.PP
+.PP
+For %s, %d, %i, %u, %p, %x, and %X, an optional number may reside between the % and the format character, which specifies the minimum number of characters to use for that value; if preceded by a 0 then the extra characters will be filled with zeros instead of spaces\&. For example, \fC\\%8d'' will use eight characters to print the decimal value with spaces added to reach eight;\fP%08d'' will use eight characters as well but will add zeroes instead of spaces\&.
+.PP
+The type of the arguments after \fIpcString\fP must match the requirements of the format string\&. For example, if an integer was passed where a string was expected, an error of some kind will most likely occur\&.
+.PP
+\fBReturns:\fP
+.RS 4
+None\&. 
+.RE
+.PP
+
+.SS "void UARTStdioConfig (uint32_t ui32PortNum, uint32_t ui32Baud, uint32_t ui32SrcClock)"
+Determines whether the ring buffer whose pointers and size are provided is full or not\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpui32Read\fP points to the read index for the buffer\&. 
+.br
+\fIpui32Write\fP points to the write index for the buffer\&. 
+.br
+\fIui32Size\fP is the size of the buffer in bytes\&.
+.RE
+.PP
+This function is used to determine whether or not a given ring buffer is full\&. The structure of the code is specifically to ensure that we do not see warnings from the compiler related to the order of volatile accesses being undefined\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns \fBtrue\fP if the buffer is full or \fBfalse\fP otherwise\&. Determines whether the ring buffer whose pointers and size are provided is empty or not\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpui32Read\fP points to the read index for the buffer\&. 
+.br
+\fIpui32Write\fP points to the write index for the buffer\&.
+.RE
+.PP
+This function is used to determine whether or not a given ring buffer is empty\&. The structure of the code is specifically to ensure that we do not see warnings from the compiler related to the order of volatile accesses being undefined\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns \fBtrue\fP if the buffer is empty or \fBfalse\fP otherwise\&. Determines the number of bytes of data contained in a ring buffer\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpui32Read\fP points to the read index for the buffer\&. 
+.br
+\fIpui32Write\fP points to the write index for the buffer\&. 
+.br
+\fIui32Size\fP is the size of the buffer in bytes\&.
+.RE
+.PP
+This function is used to determine how many bytes of data a given ring buffer currently contains\&. The structure of the code is specifically to ensure that we do not see warnings from the compiler related to the order of volatile accesses being undefined\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the number of bytes of data currently in the buffer\&. Configures the UART console\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIui32PortNum\fP is the number of UART port to use for the serial console (0-2) 
+.br
+\fIui32Baud\fP is the bit rate that the UART is to be configured to use\&. 
+.br
+\fIui32SrcClock\fP is the frequency of the source clock for the UART module\&.
+.RE
+.PP
+This function will configure the specified serial port to be used as a serial console\&. The serial parameters are set to the baud rate specified by the \fIui32Baud\fP parameter and use 8 bit, no parity, and 1 stop bit\&.
+.PP
+This function must be called prior to using any of the other UART console functions: \fBUARTprintf()\fP or \fBUARTgets()\fP\&. This function assumes that the caller has previously configured the relevant UART pins for operation as a UART rather than as GPIOs\&.
+.PP
+\fBReturns:\fP
+.RS 4
+None\&. 
+.RE
+.PP
+
+.SS "void UARTvprintf (const char * pcString, va_list vaArgP)"
+A simple UART based vprintf function supporting %c, %d, %p, %s, %u, %x, and %X\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpcString\fP is the format string\&. 
+.br
+\fIvaArgP\fP is a variable argument list pointer whose content will depend upon the format string passed in \fIpcString\fP\&.
+.RE
+.PP
+This function is very similar to the C library \fCvprintf()\fP function\&. All of its output will be sent to the UART\&. Only the following formatting characters are supported:
+.PP
+.IP "\(bu" 2
+%c to print a character
+.IP "\(bu" 2
+%d or %i to print a decimal value
+.IP "\(bu" 2
+%s to print a string
+.IP "\(bu" 2
+%u to print an unsigned decimal value
+.IP "\(bu" 2
+%x to print a hexadecimal value using lower case letters
+.IP "\(bu" 2
+%X to print a hexadecimal value using lower case letters (not upper case letters as would typically be used)
+.IP "\(bu" 2
+%p to print a pointer as a hexadecimal value
+.IP "\(bu" 2
+%% to print out a % character
+.PP
+.PP
+For %s, %d, %i, %u, %p, %x, and %X, an optional number may reside between the % and the format character, which specifies the minimum number of characters to use for that value; if preceded by a 0 then the extra characters will be filled with zeros instead of spaces\&. For example, \fC\\%8d'' will use eight characters to print the decimal value with spaces added to reach eight;\fP%08d'' will use eight characters as well but will add zeroes instead of spaces\&.
+.PP
+The type of the arguments in the variable arguments list must match the requirements of the format string\&. For example, if an integer was passed where a string was expected, an error of some kind will most likely occur\&.
+.PP
+\fBReturns:\fP
+.RS 4
+None\&. 
+.RE
+.PP
+
+.SS "int UARTwrite (const char * pcBuf, uint32_t ui32Len)"
+Writes a string of characters to the UART output\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpcBuf\fP points to a buffer containing the string to transmit\&. 
+.br
+\fIui32Len\fP is the length of the string to transmit\&.
+.RE
+.PP
+This function will transmit the string to the UART output\&. The number of characters transmitted is determined by the \fIui32Len\fP parameter\&. This function does no interpretation or translation of any characters\&. Since the output is sent to a UART, any LF (/n) characters encountered will be replaced with a CRLF pair\&.
+.PP
+Besides using the \fIui32Len\fP parameter to stop transmitting the string, if a null character (0) is encountered, then no more characters will be transmitted and the function will return\&.
+.PP
+In non-buffered mode, this function is blocking and will not return until all the characters have been written to the output FIFO\&. In buffered mode, the characters are written to the UART transmit buffer and the call returns immediately\&. If insufficient space remains in the transmit buffer, additional characters are discarded\&.
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the count of characters written\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for TM4C1294_SensorHub from the source code\&.

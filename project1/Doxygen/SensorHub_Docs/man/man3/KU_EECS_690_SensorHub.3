@@ -1,0 +1,46 @@
+.TH "KU_EECS_690_SensorHub" 3 "Thu Oct 27 2016" "Version 0.1" "TM4C1294_SensorHub" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+KU_EECS_690_SensorHub \- KU_EECS_690_SensorHub
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "uint32_t \fBProcessor_Initialization\fP ()"
+.br
+.ti -1c
+.RI "uint32_t \fBUARTStdio_Initialization\fP ()"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "uint32_t \fBg_ulSystemClock\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBProcessorInitFlag\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBFPUInitFlag\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBUARTStdioInitFlag\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBtheSystemClockFrequency\fP = 0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SH "Function Documentation"
+.PP 
+.SS "uint32_t Processor_Initialization ()"
+The processor initialization subroutine initializes the micro-controller system clock and sets a global variable for other tasks\&. 
+.SS "uint32_t UARTStdio_Initialization ()"
+The UARTStdio initialization subroutine configures PortA<1\&.\&.0> for UART0 and initializes UARTStdio for 115,200 bits per second\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for TM4C1294_SensorHub from the source code\&.
